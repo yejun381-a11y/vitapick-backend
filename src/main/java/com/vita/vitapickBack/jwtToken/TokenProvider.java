@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.vita.vitapickBack.users.UsersDTO;
@@ -16,6 +17,7 @@ import com.vita.vitapickBack.users.UsersDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 
@@ -24,10 +26,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TokenProvider {
 
-	private static final String KEY=
-			"12345678901234567890123456789012345678901234567890123456789012345678901234567890";
+	@Value("${jwt.secret}")
+	private String KEY;
 	
-	private final SecretKey key = Keys.hmacShaKeyFor(KEY.getBytes(StandardCharsets.UTF_8));
+	private SecretKey key;
+	
+	@PostConstruct
+	public void initKey() {
+		this.key = Keys.hmacShaKeyFor(KEY.getBytes(StandardCharsets.UTF_8));
+	}
 	
 	//Jwt토큰발행
 	public UsersDTO generateToken(Map<String, Object> claimList) {
