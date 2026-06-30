@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.14'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.vitapick'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Spring AI 버전 관리
+ext {
+    set('springAiVersion', "1.0.0")
+}
+
+// Spring AI BOM(Bill of Materials) 가져오기
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+
+    //  for JWT 
+	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+	implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
+
+    //  GSON 
+    implementation("com.google.code.gson:gson:2.13.2")
+
+    // 비밀번호 암호화
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // GPT 연동 (Spring AI OpenAI)
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+    
+	// 엑셀 다운로드 (Apache POI)
+	implementation 'org.apache.poi:poi-ooxml:5.4.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
